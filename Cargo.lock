@@ -9359,6 +9359,7 @@ dependencies = [
  "zcash_client_backend",
  "zcash_keys",
  "zcash_protocol",
+ "zingo-supabase",
  "zingo_common_components",
  "zingolib",
  "zip32",
@@ -9439,6 +9440,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "zingo-supabase"
+version = "0.0.1"
+dependencies = [
+ "reqwest",
+ "serde",
+ "thiserror 2.0.18",
+ "zingolib",
+]
+
+[[package]]
 name = "zingo_common_components"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -9473,7 +9484,7 @@ dependencies = [
 
 [[package]]
 name = "zingolib"
-version = "3.0.0-rc.1"
+version = "3.0.0-rc.6"
 dependencies = [
  "append-only-vec",
  "bech32",

@@ -1450,6 +1450,47 @@ impl Command for ValueTransfersCommand {
     }
 }
 
+struct SupabaseSyncCommand {}
+impl Command for SupabaseSyncCommand {
+    fn help(&self) -> &'static str {
+        indoc! {r"
+            Push all value transfers to a Supabase table.
+            Uses upsert with merge-duplicates, so it is safe to call repeatedly.
+
+            Usage:
+            supabase_sync <supabase_url> <api_key> <table>
+
+            Example:
+            supabase_sync https://xyz.supabase.co eyJhbGciOi... value_transfers
+        "}
+    }
+
+    fn short_help(&self) -> &'static str {
+        "Push all value transfers to a Supabase table"
+    }
+
+    fn exec(&self, args: &[&str], lightclient: &mut LightClient) -> String {
+        if args.len() != 3 {
+            return "Error: expected 3 arguments: <supabase_url> <api_key> <table>\nTry 'help supabase_sync' for usage.".to_string();
+        }
+
+        let client = zingo_supabase::SupabaseClient::new(args[0], args[1], args[2]);
+
+        RT.block_on(async move {
+            let transfers = match lightclient.value_transfers(false).await {
+                Ok(t) => t,
+                Err(e) => return format!("Error fetching value transfers: {e}"),
+            };
+
+            let count = transfers.len();
+            match zingo_supabase::upsert_value_transfers(&client, &transfers).await {
+                Ok(()) => format!("Upserted {count} value transfers to Supabase"),
+                Err(e) => format!("Error upserting to Supabase: {e}"),
+            }
+        })
+    }
+}
+
 struct MessagesFilterCommand {}
 impl Command for MessagesFilterCommand {
     fn help(&self) -> &'static str {
@@ -1927,6 +1968,7 @@ pub fn get_commands() -> HashMap<&'static str, Box<dyn Command>> {
         ("check_address", Box::new(CheckAddressCommand {})),
         ("height", Box::new(HeightCommand {})),
         ("value_transfers", Box::new(ValueTransfersCommand {})),
+        ("supabase_sync", Box::new(SupabaseSyncCommand {})),
         ("transactions", Box::new(TransactionsCommand {})),
         ("value_to_address", Box::new(ValueToAddressCommand {})),
         ("sends_to_address", Box::new(SendsToAddressCommand {})),

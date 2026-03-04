@@ -1,0 +1,18 @@
+[package]
+name = "zingo-supabase"
+description = "Crate for syncing Zcash wallet transactions to Supabase."
+authors = ["<zingo@zingolabs.org>"]
+version = "0.0.1"
+edition = "2024"
+repository = "https://github.com/zingolabs/zingolib"
+homepage = "https://github.com/zingolabs/zingolib"
+license = "MIT"
+
+[dependencies]
+reqwest = { workspace = true, default-features = false, features = [
+    "rustls-tls",
+    "json",
+] }
+serde = { workspace = true, features = ["derive"] }
+thiserror = { workspace = true }
+zingolib = { workspace = true }

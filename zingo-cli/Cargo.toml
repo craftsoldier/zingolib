@@ -10,6 +10,7 @@ regtest = [ "zingolib/regtest", "zingo_common_components/for_test" ]
 pepper-sync = { workspace = true }
 zingo_common_components = { workspace = true, optional = true }
 zingolib = { workspace = true }
+zingo-supabase = { workspace = true }
 
 zcash_address = { workspace = true }
 zcash_client_backend = { workspace = true }
